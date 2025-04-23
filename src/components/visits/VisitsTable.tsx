@@ -3,6 +3,7 @@ import React from 'react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Clock, Timer } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -32,15 +33,33 @@ const getStatusColor = (status: string) => {
 };
 
 const VisitsTable: React.FC<VisitsTableProps> = ({ visits, onViewVisit }) => {
+  const calculateTimeLeft = (date: Date) => {
+    const visitTime = new Date(date).getTime();
+    const now = new Date().getTime();
+    const diffMinutes = Math.floor((visitTime - now) / (1000 * 60));
+    return diffMinutes > 0 ? `${diffMinutes} min` : 'Ended';
+  };
+
   return (
     <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Citizen Name</TableHead>
-          <TableHead>Date</TableHead>
+          <TableHead>
+            <div className="flex items-center gap-1">
+              <Clock className="h-4 w-4" />
+              Date & Time
+            </div>
+          </TableHead>
           <TableHead>Reason</TableHead>
           <TableHead>Department</TableHead>
           <TableHead>Status</TableHead>
+          <TableHead>
+            <div className="flex items-center gap-1">
+              <Timer className="h-4 w-4" />
+              Time Left
+            </div>
+          </TableHead>
           <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
@@ -49,7 +68,7 @@ const VisitsTable: React.FC<VisitsTableProps> = ({ visits, onViewVisit }) => {
           visits.map((visit) => (
             <TableRow key={visit.id}>
               <TableCell className="font-medium">{visit.citizenName}</TableCell>
-              <TableCell>{format(visit.date, 'MMM d, yyyy')}</TableCell>
+              <TableCell>{format(visit.date, 'MMM d, yyyy HH:mm')}</TableCell>
               <TableCell>{visit.reasonCategory}</TableCell>
               <TableCell>
                 {departments.find(d => d.id.toString() === visit.departmentId)?.name}
@@ -57,6 +76,11 @@ const VisitsTable: React.FC<VisitsTableProps> = ({ visits, onViewVisit }) => {
               <TableCell>
                 <Badge className={getStatusColor(visit.status)}>
                   {visit.status}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <Badge variant="outline">
+                  {calculateTimeLeft(visit.date)}
                 </Badge>
               </TableCell>
               <TableCell className="text-right">
@@ -72,7 +96,7 @@ const VisitsTable: React.FC<VisitsTableProps> = ({ visits, onViewVisit }) => {
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={6} className="h-24 text-center">
+            <TableCell colSpan={7} className="h-24 text-center">
               No visits found.
             </TableCell>
           </TableRow>
