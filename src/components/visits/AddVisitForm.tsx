@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
+import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import {
   Form,
@@ -51,6 +52,7 @@ const AddVisitForm: React.FC<AddVisitFormProps> = ({ onSubmit, onCancel }) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       citizenName: '',
+      date: undefined,
       reasonCategory: '',
       description: '',
       departmentId: '',
@@ -96,22 +98,7 @@ const AddVisitForm: React.FC<AddVisitFormProps> = ({ onSubmit, onCancel }) => {
                       ) : (
                         <span>Pick a date</span>
                       )}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="ml-auto h-4 w-4 opacity-50"
-                      >
-                        <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
-                        <line x1="3" x2="21" y1="9" y2="9"></line>
-                        <line x1="9" x2="9" y1="21" y2="9"></line>
-                      </svg>
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
@@ -121,6 +108,7 @@ const AddVisitForm: React.FC<AddVisitFormProps> = ({ onSubmit, onCancel }) => {
                     selected={field.value}
                     onSelect={field.onChange}
                     initialFocus
+                    className="p-3 pointer-events-auto"
                   />
                 </PopoverContent>
               </Popover>
@@ -135,7 +123,10 @@ const AddVisitForm: React.FC<AddVisitFormProps> = ({ onSubmit, onCancel }) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Reason for Visit</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select 
+                onValueChange={field.onChange} 
+                defaultValue={field.value}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a reason" />
@@ -180,7 +171,10 @@ const AddVisitForm: React.FC<AddVisitFormProps> = ({ onSubmit, onCancel }) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Assign to Department</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select 
+                onValueChange={field.onChange} 
+                defaultValue={field.value}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a department" />

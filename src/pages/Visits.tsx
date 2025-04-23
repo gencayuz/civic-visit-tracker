@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -83,10 +84,13 @@ const Visits: React.FC = () => {
   };
 
   const handleAddVisit = (data: VisitFormData) => {
+    // Check if date is undefined and use current date in that case
+    const visitDate = data.date || new Date();
+    
     const newVisit: VisitType = {
       id: visits.length + 1,
       citizenName: data.citizenName,
-      date: data.date,
+      date: visitDate,
       reasonCategory: data.reasonCategory,
       description: data.description,
       departmentId: data.departmentId,

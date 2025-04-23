@@ -16,7 +16,7 @@ export interface Department {
 
 export type VisitFormData = {
   citizenName: string;
-  date: Date;
+  date: Date | undefined;
   reasonCategory: string;
   description: string;
   departmentId: string;
