@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
@@ -44,7 +43,16 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-// Sample departments for select dropdown
+interface VisitType {
+  id: number;
+  citizenName: string;
+  date: Date;
+  reasonCategory: string;
+  description: string;
+  departmentId: string;
+  status: string;
+}
+
 const departments = [
   { id: 1, name: 'Housing' },
   { id: 2, name: 'Taxes' },
@@ -53,7 +61,6 @@ const departments = [
   { id: 5, name: 'General Inquiries' },
 ];
 
-// Sample visit reasons for select dropdown
 const visitReasons = [
   'Document Submission',
   'Information Request',
@@ -65,7 +72,6 @@ const visitReasons = [
   'Other',
 ];
 
-// Define the form schema with zod
 const formSchema = z.object({
   citizenName: z.string().min(2, { message: 'Citizen name is required' }),
   date: z.date({ required_error: 'Visit date is required' }),
@@ -75,8 +81,7 @@ const formSchema = z.object({
   status: z.string().default('Open'),
 });
 
-// Mock initial visit data
-const initialVisits = [
+const initialVisits: VisitType[] = [
   {
     id: 1,
     citizenName: 'John Smith',
@@ -125,14 +130,13 @@ const initialVisits = [
 ];
 
 const Visits: React.FC = () => {
-  const [visits, setVisits] = useState(initialVisits);
+  const [visits, setVisits] = useState<VisitType[]>(initialVisits);
   const [searchTerm, setSearchTerm] = useState('');
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openViewDialog, setOpenViewDialog] = useState(false);
-  const [selectedVisit, setSelectedVisit] = useState<any>(null);
+  const [selectedVisit, setSelectedVisit] = useState<VisitType | null>(null);
 
-  // Setup the form
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<VisitFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       citizenName: '',
@@ -143,7 +147,6 @@ const Visits: React.FC = () => {
     },
   });
   
-  // Filter visits based on search term
   const filteredVisits = visits.filter(visit => 
     visit.citizenName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     visit.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -151,17 +154,22 @@ const Visits: React.FC = () => {
     departments.find(d => d.id.toString() === visit.departmentId)?.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleViewVisit = (visit: any) => {
+  const handleViewVisit = (visit: VisitType) => {
     setSelectedVisit(visit);
     setOpenViewDialog(true);
   };
 
-  const handleAddVisit = (data: z.infer<typeof formSchema>) => {
-    const newVisit = {
+  const handleAddVisit = (data: VisitFormData) => {
+    const newVisit: VisitType = {
       id: visits.length + 1,
-      ...data,
-      departmentId: data.departmentId.toString(),
+      citizenName: data.citizenName,
+      date: data.date,
+      reasonCategory: data.reasonCategory,
+      description: data.description,
+      departmentId: data.departmentId,
+      status: data.status,
     };
+    
     setVisits([...visits, newVisit]);
     setOpenAddDialog(false);
     form.reset();
@@ -441,7 +449,6 @@ const Visits: React.FC = () => {
         </CardContent>
       </Card>
       
-      {/* View Visit Dialog */}
       {selectedVisit && (
         <Dialog open={openViewDialog} onOpenChange={setOpenViewDialog}>
           <DialogContent className="sm:max-w-[525px]">
