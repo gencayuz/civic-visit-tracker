@@ -1,3 +1,4 @@
+
 export interface VisitType {
   id: number;
   citizenName: string;

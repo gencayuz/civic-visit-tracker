@@ -67,10 +67,18 @@ const AddVisitForm: React.FC<AddVisitFormProps> = ({ onSubmit, onCancel }) => {
     const dateWithTime = new Date(data.date);
     dateWithTime.setHours(hours, minutes);
 
-    onSubmit({
-      ...data,
+    // Ensure all required fields are present in the submission
+    const formData: VisitFormData = {
+      citizenName: data.citizenName,
       date: dateWithTime,
-    });
+      time: data.time,
+      reasonCategory: data.reasonCategory,
+      description: data.description,
+      departmentId: data.departmentId,
+      status: data.status || 'Open',
+    };
+
+    onSubmit(formData);
   };
 
   return (
