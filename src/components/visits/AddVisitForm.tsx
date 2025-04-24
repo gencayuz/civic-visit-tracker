@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -169,18 +170,16 @@ const AddVisitForm: React.FC<AddVisitFormProps> = ({ onSubmit, onCancel }) => {
                 defaultValue={field.value}
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select a reason" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    {visitReasons.map((reason) => (
-                      <SelectItem key={reason} value={reason}>
-                        {reason}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
+                <SelectContent position="popper" className="w-full z-50 bg-background">
+                  {visitReasons.map((reason) => (
+                    <SelectItem key={reason} value={reason}>
+                      {reason}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -217,18 +216,16 @@ const AddVisitForm: React.FC<AddVisitFormProps> = ({ onSubmit, onCancel }) => {
                 defaultValue={field.value}
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select a department" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    {departments.map((department) => (
-                      <SelectItem key={department.id} value={department.id.toString()}>
-                        {department.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
+                <SelectContent position="popper" className="w-full z-50 bg-background">
+                  {departments.map((department) => (
+                    <SelectItem key={department.id} value={department.id.toString()}>
+                      {department.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
