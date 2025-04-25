@@ -71,6 +71,15 @@ const Layout: React.FC = () => {
           <line x1="9" x2="9" y1="21" y2="9"></line>
         </>
       )}
+      {icon === 'events' && (
+        <>
+          <path d="M8 2v4"></path>
+          <path d="M16 2v4"></path>
+          <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+          <path d="M3 10h18"></path>
+          <path d="M9 16h6"></path>
+        </>
+      )}
       {icon === 'departments' && (
         <>
           <rect width="7" height="9" x="3" y="3" rx="1"></rect>
@@ -137,7 +146,7 @@ const Layout: React.FC = () => {
               <div className="h-7 w-7 rounded-md bg-primary flex items-center justify-center">
                 <Icon icon="visits" className="h-4 w-4 text-white" />
               </div>
-              <span className="text-lg font-semibold">Civic Tracker</span>
+              <span className="text-lg font-semibold">Belediye Takip</span>
             </div>
           )}
           <Button
@@ -156,25 +165,42 @@ const Layout: React.FC = () => {
         <div className="py-4 space-y-1 px-3">
           <NavItem to="/dashboard">
             <Icon icon="dashboard" />
-            {sidebarOpen && <span>Dashboard</span>}
+            {sidebarOpen && <span>Gösterge Paneli</span>}
           </NavItem>
+          
+          <div className="pt-4 pb-2">
+            {sidebarOpen && <div className="px-3 text-xs font-semibold text-muted-foreground tracking-wider">VATANDAŞ İŞLEMLERİ</div>}
+          </div>
+          
           <NavItem to="/visits">
             <Icon icon="visits" />
-            {sidebarOpen && <span>Manage Visits</span>}
+            {sidebarOpen && <span>Ziyaretler</span>}
           </NavItem>
+          
+          <NavItem to="/events">
+            <Icon icon="events" />
+            {sidebarOpen && <span>Etkinlikler</span>}
+          </NavItem>
+          
           <NavItem to="/departments">
             <Icon icon="departments" />
-            {sidebarOpen && <span>Departments</span>}
+            {sidebarOpen && <span>Departmanlar</span>}
           </NavItem>
+          
           {isAdmin() && (
             <>
+              <div className="pt-4 pb-2">
+                {sidebarOpen && <div className="px-3 text-xs font-semibold text-muted-foreground tracking-wider">YÖNETİM</div>}
+              </div>
+              
               <NavItem to="/reports">
                 <Icon icon="reports" />
-                {sidebarOpen && <span>Reports</span>}
+                {sidebarOpen && <span>Raporlar</span>}
               </NavItem>
+              
               <NavItem to="/settings">
                 <Icon icon="settings" />
-                {sidebarOpen && <span>Settings</span>}
+                {sidebarOpen && <span>Ayarlar</span>}
               </NavItem>
             </>
           )}
@@ -185,7 +211,7 @@ const Layout: React.FC = () => {
       <div className="flex flex-col flex-1 overflow-hidden">
         {/* Header */}
         <header className="h-16 border-b bg-background flex items-center px-6">
-          <h1 className="text-2xl font-semibold">Civic Visit Tracker</h1>
+          <h1 className="text-2xl font-semibold">Belediye Ziyaret ve Etkinlik Takip</h1>
           
           {/* User dropdown */}
           <div className="ml-auto flex items-center">
@@ -202,18 +228,18 @@ const Layout: React.FC = () => {
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">{user?.username}</p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      {user?.role === 'admin' ? 'Administrator' : 'Staff'}
+                      {user?.role === 'admin' ? 'Yönetici' : 'Personel'}
                     </p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigate('/profile')}>
-                  Profile
+                  Profil
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout}>
                   <Icon icon="logout" className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
+                  <span>Çıkış Yap</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
