@@ -22,14 +22,14 @@ export const VisitReasonField: React.FC<VisitReasonFieldProps> = ({ form }) => {
         name="reasonCategory"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Reason for Visit</FormLabel>
+            <FormLabel>Ziyaret Nedeni</FormLabel>
             <Select 
               onValueChange={field.onChange} 
               defaultValue={field.value}
             >
               <FormControl>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a reason" />
+                  <SelectValue placeholder="Bir neden seçin" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent position="popper" className="w-full z-50 bg-background">
@@ -50,10 +50,10 @@ export const VisitReasonField: React.FC<VisitReasonFieldProps> = ({ form }) => {
         name="description"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Description</FormLabel>
+            <FormLabel>Açıklama</FormLabel>
             <FormControl>
               <Textarea 
-                placeholder="Enter detailed description of the visit"
+                placeholder="Ziyaretin detaylı açıklamasını giriniz"
                 className="min-h-[100px]"
                 {...field}
               />

@@ -25,7 +25,7 @@ const AddVisitForm: React.FC<AddVisitFormProps> = ({ onSubmit, onCancel }) => {
       reasonCategory: '',
       description: '',
       departmentId: '',
-      status: 'Open',
+      status: 'Açık',
     },
   });
 
@@ -54,9 +54,9 @@ const AddVisitForm: React.FC<AddVisitFormProps> = ({ onSubmit, onCancel }) => {
         
         <div className="flex justify-end gap-2">
           <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
+            İptal
           </Button>
-          <Button type="submit">Save Visit Record</Button>
+          <Button type="submit">Ziyaret Kaydını Kaydet</Button>
         </div>
       </form>
     </Form>

@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { format } from 'date-fns';
+import { tr } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Timer } from 'lucide-react';
@@ -21,11 +22,11 @@ interface VisitsTableProps {
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'Open':
+    case 'Açık':
       return 'bg-blue-100 text-blue-800';
-    case 'In Progress':
+    case 'İşlemde':
       return 'bg-yellow-100 text-yellow-800';
-    case 'Resolved':
+    case 'Tamamlandı':
       return 'bg-green-100 text-green-800';
     default:
       return 'bg-gray-100 text-gray-800';
@@ -37,30 +38,30 @@ const VisitsTable: React.FC<VisitsTableProps> = ({ visits, onViewVisit }) => {
     const visitTime = new Date(date).getTime();
     const now = new Date().getTime();
     const diffMinutes = Math.floor((visitTime - now) / (1000 * 60));
-    return diffMinutes > 0 ? `${diffMinutes} min` : 'Ended';
+    return diffMinutes > 0 ? `${diffMinutes} dk` : 'Bitti';
   };
 
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Citizen Name</TableHead>
+          <TableHead>Vatandaş Adı</TableHead>
           <TableHead>
             <div className="flex items-center gap-1">
               <Clock className="h-4 w-4" />
-              Date & Time
+              Tarih & Saat
             </div>
           </TableHead>
-          <TableHead>Reason</TableHead>
-          <TableHead>Department</TableHead>
-          <TableHead>Status</TableHead>
+          <TableHead>Neden</TableHead>
+          <TableHead>Departman</TableHead>
+          <TableHead>Durum</TableHead>
           <TableHead>
             <div className="flex items-center gap-1">
               <Timer className="h-4 w-4" />
-              Time Left
+              Kalan Süre
             </div>
           </TableHead>
-          <TableHead className="text-right">Actions</TableHead>
+          <TableHead className="text-right">İşlemler</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -68,7 +69,7 @@ const VisitsTable: React.FC<VisitsTableProps> = ({ visits, onViewVisit }) => {
           visits.map((visit) => (
             <TableRow key={visit.id}>
               <TableCell className="font-medium">{visit.citizenName}</TableCell>
-              <TableCell>{format(visit.date, 'MMM d, yyyy HH:mm')}</TableCell>
+              <TableCell>{format(visit.date, 'd MMMM yyyy HH:mm', { locale: tr })}</TableCell>
               <TableCell>{visit.reasonCategory}</TableCell>
               <TableCell>
                 {departments.find(d => d.id.toString() === visit.departmentId)?.name}
@@ -89,7 +90,7 @@ const VisitsTable: React.FC<VisitsTableProps> = ({ visits, onViewVisit }) => {
                   size="sm"
                   onClick={() => onViewVisit(visit)}
                 >
-                  View
+                  Görüntüle
                 </Button>
               </TableCell>
             </TableRow>
@@ -97,7 +98,7 @@ const VisitsTable: React.FC<VisitsTableProps> = ({ visits, onViewVisit }) => {
         ) : (
           <TableRow>
             <TableCell colSpan={7} className="h-24 text-center">
-              No visits found.
+              Ziyaret kaydı bulunamadı.
             </TableCell>
           </TableRow>
         )}

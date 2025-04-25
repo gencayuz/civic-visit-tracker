@@ -20,14 +20,14 @@ export const VisitDepartmentField: React.FC<VisitDepartmentFieldProps> = ({ form
       name="departmentId"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Assign to Department</FormLabel>
+          <FormLabel>Departman Seçin</FormLabel>
           <Select 
             onValueChange={field.onChange} 
             defaultValue={field.value}
           >
             <FormControl>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a department" />
+                <SelectValue placeholder="Bir departman seçin" />
               </SelectTrigger>
             </FormControl>
             <SelectContent position="popper" className="w-full z-50 bg-background">

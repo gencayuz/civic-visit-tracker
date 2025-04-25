@@ -19,9 +19,9 @@ export const VisitBasicInfoField: React.FC<VisitBasicInfoFieldProps> = ({ form }
       name="citizenName"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Citizen Name</FormLabel>
+          <FormLabel>Vatandaş Adı</FormLabel>
           <FormControl>
-            <Input placeholder="Enter citizen's full name" {...field} />
+            <Input placeholder="Vatandaşın tam adını giriniz" {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>

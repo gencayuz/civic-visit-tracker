@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,48 +20,48 @@ import { VisitType, VisitFormData } from '@/types/visit';
 const initialVisits: VisitType[] = [
   {
     id: 1,
-    citizenName: 'John Smith',
+    citizenName: 'Ahmet Yılmaz',
     date: new Date(2023, 3, 15),
-    reasonCategory: 'Document Submission',
-    description: 'Submitted building permit documents',
+    reasonCategory: 'Evrak Teslimi',
+    description: 'İnşaat ruhsatı evraklarını teslim etti',
     departmentId: '4',
-    status: 'Resolved',
+    status: 'Tamamlandı',
   },
   {
     id: 2,
-    citizenName: 'Maria Garcia',
+    citizenName: 'Ayşe Kaya',
     date: new Date(2023, 3, 16),
-    reasonCategory: 'Information Request',
-    description: 'Inquired about property tax exemptions',
+    reasonCategory: 'Bilgi Talebi',
+    description: 'Emlak vergisi muafiyeti hakkında bilgi aldı',
     departmentId: '2',
-    status: 'In Progress',
+    status: 'İşlemde',
   },
   {
     id: 3,
-    citizenName: 'Ahmed Hassan',
+    citizenName: 'Mehmet Demir',
     date: new Date(2023, 3, 17),
-    reasonCategory: 'Service Registration',
-    description: 'Registered for water utility service',
+    reasonCategory: 'Hizmet Kaydı',
+    description: 'Su aboneliği başvurusu yaptı',
     departmentId: '3',
-    status: 'Open',
+    status: 'Açık',
   },
   {
     id: 4,
-    citizenName: 'Emily Chen',
+    citizenName: 'Fatma Şahin',
     date: new Date(2023, 3, 17),
-    reasonCategory: 'Complaint Filing',
-    description: 'Filed noise complaint regarding construction',
+    reasonCategory: 'Şikayet',
+    description: 'İnşaat gürültüsü şikayeti',
     departmentId: '1',
-    status: 'In Progress',
+    status: 'İşlemde',
   },
   {
     id: 5,
-    citizenName: 'Robert Johnson',
+    citizenName: 'Ali Öztürk',
     date: new Date(2023, 3, 18),
-    reasonCategory: 'Payment',
-    description: 'Made payment for property taxes',
+    reasonCategory: 'Ödeme',
+    description: 'Emlak vergisi ödemesi yaptı',
     departmentId: '2',
-    status: 'Resolved',
+    status: 'Tamamlandı',
   },
 ];
 
@@ -97,23 +98,23 @@ const Visits: React.FC = () => {
     
     setVisits([...visits, newVisit]);
     setOpenAddDialog(false);
-    toast.success('Visit record created successfully');
+    toast.success('Ziyaret kaydı başarıyla oluşturuldu');
   };
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold tracking-tight">Visit Management</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Ziyaret Yönetimi</h1>
         
         <Dialog open={openAddDialog} onOpenChange={setOpenAddDialog}>
           <DialogTrigger asChild>
-            <Button>Record New Visit</Button>
+            <Button>Yeni Ziyaret Kaydet</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[525px]">
             <DialogHeader>
-              <DialogTitle>Record New Citizen Visit</DialogTitle>
+              <DialogTitle>Yeni Vatandaş Ziyareti Kaydet</DialogTitle>
               <DialogDescription>
-                Enter the details of the citizen visit. Click save when you're done.
+                Vatandaş ziyaret detaylarını giriniz. Bitirdiğinizde kaydet butonuna tıklayın.
               </DialogDescription>
             </DialogHeader>
             <AddVisitForm 
@@ -126,7 +127,7 @@ const Visits: React.FC = () => {
       
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg">Search Visits</CardTitle>
+          <CardTitle className="text-lg">Ziyaret Ara</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="relative">
@@ -146,7 +147,7 @@ const Visits: React.FC = () => {
               <path d="m21 21-4.3-4.3"></path>
             </svg>
             <Input
-              placeholder="Search visits by name, description, reason..."
+              placeholder="İsim, açıklama veya nedene göre ara..."
               className="pl-8"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -168,9 +169,9 @@ const Visits: React.FC = () => {
         <Dialog open={openViewDialog} onOpenChange={setOpenViewDialog}>
           <DialogContent className="sm:max-w-[525px]">
             <DialogHeader>
-              <DialogTitle>Visit Details</DialogTitle>
+              <DialogTitle>Ziyaret Detayları</DialogTitle>
               <DialogDescription>
-                Details of the citizen visit record.
+                Vatandaş ziyaret kaydının detayları.
               </DialogDescription>
             </DialogHeader>
             <VisitDetails 

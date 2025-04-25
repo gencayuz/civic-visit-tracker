@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { format } from 'date-fns';
+import { tr } from 'date-fns/locale';
 import { CalendarIcon } from 'lucide-react';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
@@ -26,7 +27,7 @@ export const VisitDateTimeField: React.FC<VisitDateTimeFieldProps> = ({ form }) 
         name="date"
         render={({ field }) => (
           <FormItem className="flex-1">
-            <FormLabel>Visit Date</FormLabel>
+            <FormLabel>Ziyaret Tarihi</FormLabel>
             <Popover>
               <PopoverTrigger asChild>
                 <FormControl>
@@ -38,9 +39,9 @@ export const VisitDateTimeField: React.FC<VisitDateTimeFieldProps> = ({ form }) 
                     )}
                   >
                     {field.value ? (
-                      format(field.value, "PPP")
+                      format(field.value, "PPP", { locale: tr })
                     ) : (
-                      <span>Pick a date</span>
+                      <span>Tarih seçin</span>
                     )}
                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                   </Button>
@@ -53,6 +54,7 @@ export const VisitDateTimeField: React.FC<VisitDateTimeFieldProps> = ({ form }) 
                   onSelect={field.onChange}
                   initialFocus
                   className="p-3 pointer-events-auto"
+                  locale={tr}
                 />
               </PopoverContent>
             </Popover>
@@ -66,11 +68,11 @@ export const VisitDateTimeField: React.FC<VisitDateTimeFieldProps> = ({ form }) 
         name="time"
         render={({ field }) => (
           <FormItem className="flex-1">
-            <FormLabel>Visit Time</FormLabel>
+            <FormLabel>Ziyaret Saati</FormLabel>
             <FormControl>
               <Input
                 type="time"
-                placeholder="Select time"
+                placeholder="Saat seçin"
                 {...field}
               />
             </FormControl>

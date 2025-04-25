@@ -25,20 +25,20 @@ export type VisitFormData = {
 };
 
 export const departments: Department[] = [
-  { id: 1, name: 'Housing' },
-  { id: 2, name: 'Taxes' },
-  { id: 3, name: 'Utilities' },
-  { id: 4, name: 'Permits' },
-  { id: 5, name: 'General Inquiries' },
+  { id: 1, name: 'İskan' },
+  { id: 2, name: 'Vergi' },
+  { id: 3, name: 'Su ve Kanalizasyon' },
+  { id: 4, name: 'İmar ve Ruhsat' },
+  { id: 5, name: 'Genel Başvuru' },
 ];
 
 export const visitReasons = [
-  'Document Submission',
-  'Information Request',
-  'Service Registration',
-  'Complaint Filing',
-  'Permit Application',
-  'Payment',
-  'Consultation',
-  'Other',
+  'Evrak Teslimi',
+  'Bilgi Talebi',
+  'Hizmet Kaydı',
+  'Şikayet',
+  'Ruhsat Başvurusu',
+  'Ödeme',
+  'Danışma',
+  'Diğer',
 ];
