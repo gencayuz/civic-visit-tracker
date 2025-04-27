@@ -1,7 +1,7 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { LoginLog } from '@/types/loginLog';
 
 // Mock users for demonstration purposes
 const MOCK_USERS = [
@@ -21,6 +21,7 @@ interface AuthContextType {
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
   isAdmin: () => boolean;
+  loginLogs: LoginLog[];
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,13 +29,19 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loginLogs, setLoginLogs] = useState<LoginLog[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check for stored user in localStorage on component mount
+    // Stored user check
     const storedUser = localStorage.getItem('user');
+    const storedLogs = localStorage.getItem('loginLogs');
+    
     if (storedUser) {
       setUser(JSON.parse(storedUser));
+    }
+    if (storedLogs) {
+      setLoginLogs(JSON.parse(storedLogs));
     }
     setIsLoading(false);
   }, []);
@@ -42,10 +49,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = async (username: string, password: string) => {
     setIsLoading(true);
     try {
-      // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Find user from mock data
       const foundUser = MOCK_USERS.find(
         user => user.username === username && user.password === password
       );
@@ -54,13 +59,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const userData = { username: foundUser.username, role: foundUser.role };
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
-        toast.success(`Welcome, ${foundUser.username}!`);
+        
+        // Yeni giriş kaydı oluştur
+        const newLog: LoginLog = {
+          id: loginLogs.length + 1,
+          username: foundUser.username,
+          loginDate: new Date(),
+          role: foundUser.role
+        };
+        
+        const updatedLogs = [...loginLogs, newLog];
+        setLoginLogs(updatedLogs);
+        localStorage.setItem('loginLogs', JSON.stringify(updatedLogs));
+        
+        toast.success(`Hoş geldiniz, ${foundUser.username}!`);
         navigate('/dashboard');
       } else {
-        throw new Error('Invalid username or password');
+        throw new Error('Geçersiz kullanıcı adı veya şifre');
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Login failed');
+      toast.error(error instanceof Error ? error.message : 'Giriş başarısız');
       throw error;
     } finally {
       setIsLoading(false);
@@ -70,6 +88,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
+    localStorage.removeItem('loginLogs');
     toast.info('You have been logged out');
     navigate('/login');
   };
@@ -80,7 +99,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   return (
     <AuthContext.Provider 
-      value={{ user, isAuthenticated: !!user, isLoading, login, logout, isAdmin }}
+      value={{ 
+        user, 
+        isAuthenticated: !!user, 
+        isLoading, 
+        login, 
+        logout, 
+        isAdmin,
+        loginLogs 
+      }}
     >
       {children}
     </AuthContext.Provider>
