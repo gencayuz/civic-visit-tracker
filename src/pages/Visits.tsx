@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -81,6 +80,13 @@ const Visits: React.FC = () => {
   const handleViewVisit = (visit: VisitType) => {
     setSelectedVisit(visit);
     setOpenViewDialog(true);
+  };
+
+  const handleUpdateVisit = (updatedVisit: VisitType) => {
+    setVisits(visits.map(visit => 
+      visit.id === updatedVisit.id ? updatedVisit : visit
+    ));
+    setSelectedVisit(updatedVisit);
   };
 
   const handleAddVisit = (data: VisitFormData) => {
@@ -177,6 +183,7 @@ const Visits: React.FC = () => {
             <VisitDetails 
               visit={selectedVisit}
               onClose={() => setOpenViewDialog(false)}
+              onUpdate={handleUpdateVisit}
             />
           </DialogContent>
         </Dialog>

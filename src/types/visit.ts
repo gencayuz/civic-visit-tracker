@@ -1,4 +1,3 @@
-
 export interface VisitType {
   id: number;
   citizenName: string;
@@ -42,3 +41,13 @@ export const visitReasons = [
   'Danışma',
   'Diğer',
 ];
+
+export const visitStatuses = [
+  'Açık',
+  'İşlemde',
+  'Tamamlandı',
+  'İptal Edildi',
+  'Gelmedi'
+] as const;
+
+export type VisitStatus = typeof visitStatuses[number];
