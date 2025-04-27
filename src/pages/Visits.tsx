@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CalendarIcon } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -10,7 +11,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { format } from 'date-fns';
+import { tr } from 'date-fns/locale';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 import AddVisitForm from '@/components/visits/AddVisitForm';
 import VisitDetails from '@/components/visits/VisitDetails';
 import VisitsTable from '@/components/visits/VisitsTable';
@@ -67,15 +77,26 @@ const initialVisits: VisitType[] = [
 const Visits: React.FC = () => {
   const [visits, setVisits] = useState<VisitType[]>(initialVisits);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openViewDialog, setOpenViewDialog] = useState(false);
   const [selectedVisit, setSelectedVisit] = useState<VisitType | null>(null);
   
-  const filteredVisits = visits.filter(visit => 
-    visit.citizenName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    visit.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    visit.reasonCategory.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredVisits = visits.filter(visit => {
+    const matchesText = visit.citizenName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      visit.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      visit.reasonCategory.toLowerCase().includes(searchTerm.toLowerCase());
+
+    if (selectedDate) {
+      const visitDate = new Date(visit.date);
+      return matchesText && 
+        visitDate.getDate() === selectedDate.getDate() &&
+        visitDate.getMonth() === selectedDate.getMonth() &&
+        visitDate.getFullYear() === selectedDate.getFullYear();
+    }
+
+    return matchesText;
+  });
 
   const handleViewVisit = (visit: VisitType) => {
     setSelectedVisit(visit);
@@ -136,28 +157,69 @@ const Visits: React.FC = () => {
           <CardTitle className="text-lg">Ziyaret Ara</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="relative">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.3-4.3"></path>
-            </svg>
-            <Input
-              placeholder="İsim, açıklama veya nedene göre ara..."
-              className="pl-8"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground"
+              >
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+              </svg>
+              <Input
+                placeholder="İsim, açıklama veya nedene göre ara..."
+                className="pl-8"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "justify-start text-left font-normal min-w-[240px]",
+                    !selectedDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {selectedDate ? (
+                    format(selectedDate, "d MMMM yyyy", { locale: tr })
+                  ) : (
+                    <span>Tarih seçin</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={(date) => setSelectedDate(date)}
+                  initialFocus
+                  className={cn("p-3 pointer-events-auto")}
+                  locale={tr}
+                />
+              </PopoverContent>
+            </Popover>
+
+            {selectedDate && (
+              <Button 
+                variant="ghost" 
+                onClick={() => setSelectedDate(undefined)}
+                className="px-3"
+              >
+                Tarihi Temizle
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
