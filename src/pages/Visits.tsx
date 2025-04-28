@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, FileWord, FileExcel } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -35,7 +35,7 @@ import { cn } from '@/lib/utils';
 import AddVisitForm from '@/components/visits/AddVisitForm';
 import VisitDetails from '@/components/visits/VisitDetails';
 import VisitsTable from '@/components/visits/VisitsTable';
-import { VisitType, VisitFormData } from '@/types/visit';
+import { VisitType, VisitFormData, departments } from '@/types/visit';
 import { directorates } from '@/types/directorate';
 
 const initialVisits: VisitType[] = [
@@ -111,6 +111,77 @@ const Visits: React.FC = () => {
 
     return matchesText;
   });
+
+  // Export to Word
+  const exportToWord = () => {
+    // Create a formatted HTML table for Word
+    const header = '<tr><th>Vatandaş</th><th>Tarih</th><th>Kategori</th><th>Departman</th><th>Durum</th><th>Açıklama</th></tr>';
+    
+    const rows = filteredVisits.map(visit => {
+      const department = departments.find(d => d.id.toString() === visit.departmentId)?.name || '-';
+      return `
+        <tr>
+          <td>${visit.citizenName}</td>
+          <td>${format(visit.date, 'dd MMMM yyyy', { locale: tr })}</td>
+          <td>${visit.reasonCategory}</td>
+          <td>${department}</td>
+          <td>${visit.status}</td>
+          <td>${visit.description}</td>
+        </tr>
+      `;
+    }).join('');
+    
+    const html = `
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Ziyaret Listesi</title>
+          <style>
+            body { font-family: Arial, sans-serif; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #ddd; padding: 8px; }
+            th { background-color: #f2f2f2; }
+          </style>
+        </head>
+        <body>
+          <h1>Ziyaret Listesi</h1>
+          ${selectedDate ? `<p>Tarih: ${format(selectedDate, 'dd MMMM yyyy', { locale: tr })}</p>` : ''}
+          <table>
+            ${header}
+            ${rows}
+          </table>
+        </body>
+      </html>
+    `;
+    
+    const blob = new Blob([html], { type: 'application/msword' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `ziyaret_listesi_${format(new Date(), 'yyyy-MM-dd')}.doc`;
+    link.click();
+    
+    toast.success(`Ziyaret listesi Word formatında indirildi`);
+  };
+  
+  // Export to Excel
+  const exportToExcel = () => {
+    // Create a formatted CSV for Excel
+    const header = 'Vatandaş,Tarih,Kategori,Departman,Durum,Açıklama\n';
+    
+    const rows = filteredVisits.map(visit => {
+      const department = departments.find(d => d.id.toString() === visit.departmentId)?.name || '-';
+      return `"${visit.citizenName}","${format(visit.date, 'dd MMMM yyyy', { locale: tr })}","${visit.reasonCategory}","${department}","${visit.status}","${visit.description}"`;
+    }).join('\n');
+    
+    const csv = `${header}${rows}`;
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `ziyaret_listesi_${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    link.click();
+    
+    toast.success(`Ziyaret listesi Excel formatında indirildi`);
+  };
 
   const handleViewVisit = (visit: VisitType) => {
     setSelectedVisit(visit);
@@ -271,6 +342,29 @@ const Visits: React.FC = () => {
       </Card>
       
       <Card className="overflow-hidden">
+        <CardHeader className="flex flex-row items-center justify-between px-6">
+          <CardTitle>Ziyaret Listesi</CardTitle>
+          <div className="flex space-x-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={exportToWord}
+              className="flex items-center gap-1"
+            >
+              <FileWord className="h-4 w-4" />
+              <span>Word</span>
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={exportToExcel}
+              className="flex items-center gap-1"
+            >
+              <FileExcel className="h-4 w-4" />
+              <span>Excel</span>
+            </Button>
+          </div>
+        </CardHeader>
         <CardContent className="p-0">
           <VisitsTable 
             visits={filteredVisits}

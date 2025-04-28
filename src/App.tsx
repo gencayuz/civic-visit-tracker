@@ -38,18 +38,23 @@ const App = () => (
             {/* Oturum gerektiren sayfalar */}
             <Route element={<ProtectedRoute />}>
               <Route element={<Layout />}>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/visits" element={<Visits />} />
-                <Route path="/events" element={<Events />} />
-                <Route path="/departments" element={<Departments />} />
+                {/* Sadece müdürlüklere açık sayfalar */}
                 <Route path="/directorates" element={<Directorates />} />
-                <Route path="/profile" element={<Profile />} />
                 
-                {/* Sadece Admin erişimli sayfalar */}
-                <Route element={<ProtectedRoute requireAdmin={true} />}>
-                  <Route path="/reports" element={<Reports />} />
-                  <Route path="/settings" element={<Settings />} />
+                {/* Müdürlüklere kapalı sayfalar */}
+                <Route element={<ProtectedRoute allowDirectorate={false} />}>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/visits" element={<Visits />} />
+                  <Route path="/events" element={<Events />} />
+                  <Route path="/departments" element={<Departments />} />
+                  <Route path="/profile" element={<Profile />} />
+                
+                  {/* Sadece Admin erişimli sayfalar */}
+                  <Route element={<ProtectedRoute requireAdmin={true} />}>
+                    <Route path="/reports" element={<Reports />} />
+                    <Route path="/settings" element={<Settings />} />
+                  </Route>
                 </Route>
               </Route>
             </Route>

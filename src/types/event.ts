@@ -2,6 +2,8 @@
 export interface EventType {
   id: number;
   requestorName: string;
+  companyName?: string;
+  phoneNumber?: string;
   activityName: string;
   address: string;
   date: Date;
@@ -11,6 +13,8 @@ export interface EventType {
 
 export type EventFormData = {
   requestorName: string;
+  companyName?: string;
+  phoneNumber?: string;
   activityName: string;
   address: string;
   date: Date;
@@ -22,7 +26,8 @@ export type EventFormData = {
 export const defaultAttendees = [
   "Başkan Mehmet Özcan",
   "Başkan Yardımcısı İsmail Büyükvarlık",
-  "Başkan Yardımcısı Bilgin Atlı"
+  "Başkan Yardımcısı Bilgin Atlı",
+  "Diğer"
 ];
 
 export const activityTypes = [

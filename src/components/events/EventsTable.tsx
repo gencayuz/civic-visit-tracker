@@ -27,6 +27,8 @@ const EventsTable: React.FC<EventsTableProps> = ({
       <TableHeader>
         <TableRow>
           <TableHead>Talep Eden</TableHead>
+          <TableHead>Firma Adı</TableHead>
+          <TableHead>Telefon Numarası</TableHead>
           <TableHead>Etkinlik</TableHead>
           <TableHead>Tarih</TableHead>
           <TableHead>Adres</TableHead>
@@ -35,47 +37,57 @@ const EventsTable: React.FC<EventsTableProps> = ({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {events.map((event) => (
-          <TableRow key={event.id}>
-            <TableCell className="font-medium">{event.requestorName}</TableCell>
-            <TableCell>{event.activityName}</TableCell>
-            <TableCell>
-              {format(event.date, 'dd MMMM yyyy HH:mm', { locale: tr })}
-            </TableCell>
-            <TableCell className="max-w-md truncate">{event.address}</TableCell>
-            <TableCell>{event.attendees.length} kişi</TableCell>
-            <TableCell className="text-right">
-              <div className="flex justify-end gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onViewEvent(event)}
-                >
-                  Görüntüle
-                </Button>
-                {isAdmin() && (
-                  <>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEditEvent(event)}
-                    >
-                      Düzenle
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-red-500 hover:text-red-700"
-                      onClick={() => onDeleteEvent(event)}
-                    >
-                      Sil
-                    </Button>
-                  </>
-                )}
-              </div>
+        {events.length > 0 ? (
+          events.map((event) => (
+            <TableRow key={event.id}>
+              <TableCell className="font-medium">{event.requestorName}</TableCell>
+              <TableCell>{event.companyName || '-'}</TableCell>
+              <TableCell>{event.phoneNumber || '-'}</TableCell>
+              <TableCell>{event.activityName}</TableCell>
+              <TableCell>
+                {format(event.date, 'dd MMMM yyyy HH:mm', { locale: tr })}
+              </TableCell>
+              <TableCell className="max-w-md truncate">{event.address}</TableCell>
+              <TableCell>{event.attendees.length} kişi</TableCell>
+              <TableCell className="text-right">
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onViewEvent(event)}
+                  >
+                    Görüntüle
+                  </Button>
+                  {isAdmin() && (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onEditEvent(event)}
+                      >
+                        Düzenle
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-500 hover:text-red-700"
+                        onClick={() => onDeleteEvent(event)}
+                      >
+                        Sil
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </TableCell>
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell colSpan={8} className="h-24 text-center">
+              Etkinlik bulunamadı.
             </TableCell>
           </TableRow>
-        ))}
+        )}
       </TableBody>
     </Table>
   );

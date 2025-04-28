@@ -50,13 +50,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const storedLogs = localStorage.getItem('loginLogs');
     
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const userData = JSON.parse(storedUser);
+      setUser(userData);
+      
+      // If user is directorate, redirect to the directorates page
+      if (userData.role === 'directorate') {
+        navigate('/directorates');
+      }
     }
+    
     if (storedLogs) {
       setLoginLogs(JSON.parse(storedLogs));
     }
+    
     setIsLoading(false);
-  }, []);
+  }, [navigate]);
 
   const login = async (username: string, password: string) => {
     setIsLoading(true);
@@ -94,7 +102,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         localStorage.setItem('loginLogs', JSON.stringify(updatedLogs));
         
         toast.success(`Hoş geldiniz, ${foundUser.username}!`);
-        navigate('/dashboard');
+        
+        // Direct directorate users straight to the directorates page
+        if (foundUser.role === 'directorate') {
+          navigate('/directorates');
+        } else {
+          navigate('/dashboard');
+        }
       } else {
         throw new Error('Geçersiz kullanıcı adı veya şifre');
       }

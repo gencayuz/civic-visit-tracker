@@ -1,14 +1,19 @@
 
 import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface ProtectedRouteProps {
   requireAdmin?: boolean;
+  allowDirectorate?: boolean;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requireAdmin = false }) => {
-  const { isAuthenticated, isLoading, isAdmin } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
+  requireAdmin = false,
+  allowDirectorate = true
+}) => {
+  const { isAuthenticated, isLoading, isAdmin, isDirectorate } = useAuth();
+  const location = useLocation();
 
   if (isLoading) {
     return (
@@ -26,6 +31,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requireAdmin = false })
   // Check if admin access is required
   if (requireAdmin && !isAdmin()) {
     return <Navigate to="/unauthorized" replace />;
+  }
+  
+  // Check if this is a directorate user trying to access a non-directorate page
+  if (isDirectorate() && !allowDirectorate && location.pathname !== '/directorates') {
+    return <Navigate to="/directorates" replace />;
   }
 
   return <Outlet />;
