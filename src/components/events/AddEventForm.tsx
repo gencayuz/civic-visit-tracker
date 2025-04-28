@@ -35,12 +35,14 @@ import { defaultAttendees, activityTypes } from '@/types/event';
 interface AddEventFormProps {
   onSubmit: (data: EventFormData) => void;
   onCancel: () => void;
+  initialData?: EventFormData;
+  isEditing?: boolean;
 }
 
-const AddEventForm = ({ onSubmit, onCancel }: AddEventFormProps) => {
+const AddEventForm = ({ onSubmit, onCancel, initialData, isEditing = false }: AddEventFormProps) => {
   const form = useForm<EventFormData>({
     resolver: zodResolver(eventFormSchema),
-    defaultValues: {
+    defaultValues: initialData || {
       requestorName: '',
       activityName: '',
       address: '',

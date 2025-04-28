@@ -68,11 +68,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       );
 
       if (foundUser) {
-        const userData = { 
+        const userData: User = { 
           username: foundUser.username, 
-          role: foundUser.role,
-          directorateId: foundUser.directorateId
+          role: foundUser.role
         };
+        
+        // Only add directorateId if it exists in the found user
+        if ('directorateId' in foundUser) {
+          userData.directorateId = foundUser.directorateId;
+        }
         
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));

@@ -13,6 +13,7 @@ export type Task = {
   description: string;
   date: Date;
   status: 'Beklemede' | 'İşlemde' | 'Tamamlandı';
+  forwardedTo?: string;
 };
 
 export const directorates: DirectorateType[] = [
