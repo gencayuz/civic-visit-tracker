@@ -41,7 +41,7 @@ const App = () => (
                 {/* Sadece müdürlüklere açık sayfalar */}
                 <Route path="/directorates" element={<Directorates />} />
                 
-                {/* Müdürlüklere kapalı sayfalar */}
+                {/* Directorates are now completely restricted from these routes */}
                 <Route element={<ProtectedRoute allowDirectorate={false} />}>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/dashboard" element={<Dashboard />} />

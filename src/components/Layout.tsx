@@ -38,7 +38,7 @@ const NavItem = ({ to, children, className }: NavItemProps) => {
 };
 
 const Layout: React.FC = () => {
-  const { user, logout, isAdmin } = useAuth();
+  const { user, logout, isAdmin, isDirectorate } = useAuth();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
@@ -137,6 +137,9 @@ const Layout: React.FC = () => {
     </svg>
   );
 
+  // Check if the user is from a directorate
+  const isDirectorateUser = isDirectorate();
+
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
@@ -169,35 +172,44 @@ const Layout: React.FC = () => {
         </div>
 
         <div className="py-4 space-y-1 px-3">
-          <NavItem to="/dashboard">
-            <Icon icon="dashboard" />
-            {sidebarOpen && <span>Gösterge Paneli</span>}
-          </NavItem>
+          {/* Only show Dashboard for non-directorate users */}
+          {!isDirectorateUser && (
+            <NavItem to="/dashboard">
+              <Icon icon="dashboard" />
+              {sidebarOpen && <span>Gösterge Paneli</span>}
+            </NavItem>
+          )}
           
-          <div className="pt-4 pb-2">
-            {sidebarOpen && <div className="px-3 text-xs font-semibold text-muted-foreground tracking-wider">VATANDAŞ İŞLEMLERİ</div>}
-          </div>
+          {!isDirectorateUser && (
+            <>
+              <div className="pt-4 pb-2">
+                {sidebarOpen && <div className="px-3 text-xs font-semibold text-muted-foreground tracking-wider">VATANDAŞ İŞLEMLERİ</div>}
+              </div>
+              
+              <NavItem to="/visits">
+                <Icon icon="visits" />
+                {sidebarOpen && <span>Ziyaretler</span>}
+              </NavItem>
+              
+              <NavItem to="/events">
+                <Icon icon="events" />
+                {sidebarOpen && <span>Etkinlikler</span>}
+              </NavItem>
+              
+              <NavItem to="/departments">
+                <Icon icon="departments" />
+                {sidebarOpen && <span>Departmanlar</span>}
+              </NavItem>
+            </>
+          )}
           
-          <NavItem to="/visits">
-            <Icon icon="visits" />
-            {sidebarOpen && <span>Ziyaretler</span>}
-          </NavItem>
-          
-          <NavItem to="/events">
-            <Icon icon="events" />
-            {sidebarOpen && <span>Etkinlikler</span>}
-          </NavItem>
-          
-          <NavItem to="/departments">
-            <Icon icon="departments" />
-            {sidebarOpen && <span>Departmanlar</span>}
-          </NavItem>
-          
+          {/* Directorates link is shown to all users */}
           <NavItem to="/directorates">
             <Icon icon="directorates" />
             {sidebarOpen && <span>Müdürlükler</span>}
           </NavItem>
           
+          {/* Admin section only visible to admins */}
           {isAdmin() && (
             <>
               <div className="pt-4 pb-2">
@@ -239,7 +251,8 @@ const Layout: React.FC = () => {
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">{user?.username}</p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      {user?.role === 'admin' ? 'Yönetici' : 'Personel'}
+                      {user?.role === 'admin' ? 'Yönetici' : 
+                       user?.role === 'directorate' ? 'Müdürlük' : 'Personel'}
                     </p>
                   </div>
                 </DropdownMenuLabel>

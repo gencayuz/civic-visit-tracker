@@ -34,7 +34,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
   
   // Check if this is a directorate user trying to access a non-directorate page
-  if (isDirectorate() && !allowDirectorate && location.pathname !== '/directorates') {
+  if (isDirectorate() && !allowDirectorate) {
+    return <Navigate to="/directorates" replace />;
+  }
+
+  // Check if this is a directorate user trying to access any page other than the directorates page
+  if (isDirectorate() && location.pathname !== '/directorates') {
     return <Navigate to="/directorates" replace />;
   }
 
