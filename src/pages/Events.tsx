@@ -53,6 +53,7 @@ const Events: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openViewDialog, setOpenViewDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
   
   const filteredEvents = events.filter(event => 
@@ -67,8 +68,32 @@ const Events: React.FC = () => {
   };
 
   const handleEditEvent = (event: EventType) => {
-    // Bu fonksiyon daha sonra implement edilecek
-    toast.info("Düzenleme özelliği henüz aktif değil");
+    setSelectedEvent(event);
+    setOpenEditDialog(true);
+  };
+
+  const handleUpdateEvent = (data: EventFormData) => {
+    if (!selectedEvent) return;
+    
+    const updatedEvent: EventType = {
+      ...selectedEvent,
+      requestorName: data.requestorName,
+      activityName: data.activityName,
+      address: data.address,
+      date: new Date(
+        data.date.getFullYear(),
+        data.date.getMonth(),
+        data.date.getDate(),
+        Number(data.time?.split(':')[0]) || 0,
+        Number(data.time?.split(':')[1]) || 0
+      ),
+      attendees: data.attendees,
+      additionalInfo: data.additionalInfo || '',
+    };
+    
+    setEvents(events.map(e => e.id === updatedEvent.id ? updatedEvent : e));
+    setOpenEditDialog(false);
+    toast.success('Etkinlik başarıyla güncellendi');
   };
 
   const handleDeleteEvent = (event: EventType) => {
@@ -98,6 +123,22 @@ const Events: React.FC = () => {
     setEvents([...events, newEvent]);
     setOpenAddDialog(false);
     toast.success('Etkinlik başarıyla oluşturuldu');
+  };
+
+  // Convert event data to form data for editing
+  const eventToFormData = (event: EventType): EventFormData => {
+    const hours = event.date.getHours().toString().padStart(2, '0');
+    const minutes = event.date.getMinutes().toString().padStart(2, '0');
+    
+    return {
+      requestorName: event.requestorName,
+      activityName: event.activityName,
+      address: event.address,
+      date: event.date,
+      time: `${hours}:${minutes}`,
+      attendees: event.attendees,
+      additionalInfo: event.additionalInfo,
+    };
   };
 
   return (
@@ -167,17 +208,38 @@ const Events: React.FC = () => {
       </Card>
       
       {selectedEvent && (
-        <Dialog open={openViewDialog} onOpenChange={setOpenViewDialog}>
-          <DialogContent className="sm:max-w-[525px]">
-            <DialogHeader>
-              <DialogTitle>Etkinlik Detayları</DialogTitle>
-            </DialogHeader>
-            <EventDetails 
-              event={selectedEvent}
-              onClose={() => setOpenViewDialog(false)}
-            />
-          </DialogContent>
-        </Dialog>
+        <>
+          <Dialog open={openViewDialog} onOpenChange={setOpenViewDialog}>
+            <DialogContent className="sm:max-w-[525px]">
+              <DialogHeader>
+                <DialogTitle>Etkinlik Detayları</DialogTitle>
+              </DialogHeader>
+              <EventDetails 
+                event={selectedEvent}
+                onClose={() => setOpenViewDialog(false)}
+              />
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
+            <DialogContent className="sm:max-w-[550px]">
+              <DialogHeader>
+                <DialogTitle>Etkinlik Düzenle</DialogTitle>
+                <DialogDescription>
+                  Etkinlik detaylarını güncelleyiniz. Bitirdiğinizde kaydet butonuna tıklayın.
+                </DialogDescription>
+              </DialogHeader>
+              {selectedEvent && (
+                <AddEventForm 
+                  initialData={eventToFormData(selectedEvent)}
+                  onSubmit={handleUpdateEvent}
+                  onCancel={() => setOpenEditDialog(false)}
+                  isEditing={true}
+                />
+              )}
+            </DialogContent>
+          </Dialog>
+        </>
       )}
     </div>
   );

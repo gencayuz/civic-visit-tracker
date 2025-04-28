@@ -1,3 +1,4 @@
+
 export interface VisitType {
   id: number;
   citizenName: string;
@@ -6,6 +7,7 @@ export interface VisitType {
   description: string;
   departmentId: string;
   status: string;
+  forwardedTo?: string;
 }
 
 export interface Department {

@@ -88,6 +88,12 @@ const Layout: React.FC = () => {
           <rect width="7" height="5" x="3" y="16" rx="1"></rect>
         </>
       )}
+      {icon === 'directorates' && (
+        <>
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+        </>
+      )}
       {icon === 'reports' && (
         <>
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -185,6 +191,11 @@ const Layout: React.FC = () => {
           <NavItem to="/departments">
             <Icon icon="departments" />
             {sidebarOpen && <span>Departmanlar</span>}
+          </NavItem>
+          
+          <NavItem to="/directorates">
+            <Icon icon="directorates" />
+            {sidebarOpen && <span>Müdürlükler</span>}
           </NavItem>
           
           {isAdmin() && (

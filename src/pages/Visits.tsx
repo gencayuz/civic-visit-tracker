@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,12 +11,22 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from '@/components/ui/dialog';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
@@ -25,6 +36,7 @@ import AddVisitForm from '@/components/visits/AddVisitForm';
 import VisitDetails from '@/components/visits/VisitDetails';
 import VisitsTable from '@/components/visits/VisitsTable';
 import { VisitType, VisitFormData } from '@/types/visit';
+import { directorates } from '@/types/directorate';
 
 const initialVisits: VisitType[] = [
   {
@@ -81,6 +93,8 @@ const Visits: React.FC = () => {
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openViewDialog, setOpenViewDialog] = useState(false);
   const [selectedVisit, setSelectedVisit] = useState<VisitType | null>(null);
+  const [openForwardDialog, setOpenForwardDialog] = useState(false);
+  const [selectedDirectorate, setSelectedDirectorate] = useState<string>("");
   
   const filteredVisits = visits.filter(visit => {
     const matchesText = visit.citizenName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -108,6 +122,38 @@ const Visits: React.FC = () => {
       visit.id === updatedVisit.id ? updatedVisit : visit
     ));
     setSelectedVisit(updatedVisit);
+  };
+  
+  const handleDeleteVisit = (visitId: number) => {
+    setVisits(visits.filter(visit => visit.id !== visitId));
+    toast.success("Ziyaret kaydı başarıyla silindi");
+  };
+
+  const handleForwardVisit = (visit: VisitType) => {
+    setSelectedVisit(visit);
+    setOpenForwardDialog(true);
+  };
+
+  const handleConfirmForward = () => {
+    if (!selectedVisit || !selectedDirectorate) {
+      toast.error("Lütfen bir müdürlük seçin");
+      return;
+    }
+
+    // Here we would normally send this to the backend
+    // For now, we'll just show a success message
+    toast.success(`Ziyaret kaydı başarıyla ${selectedDirectorate} müdürlüğüne yönlendirildi`);
+    
+    // Update the visit record with the directorate information
+    const updatedVisit = {
+      ...selectedVisit,
+      forwardedTo: selectedDirectorate,
+      status: 'İşlemde'
+    };
+    
+    handleUpdateVisit(updatedVisit);
+    setOpenForwardDialog(false);
+    setSelectedDirectorate("");
   };
 
   const handleAddVisit = (data: VisitFormData) => {
@@ -229,26 +275,66 @@ const Visits: React.FC = () => {
           <VisitsTable 
             visits={filteredVisits}
             onViewVisit={handleViewVisit}
+            onDeleteVisit={handleDeleteVisit}
+            onForwardVisit={handleForwardVisit}
           />
         </CardContent>
       </Card>
       
       {selectedVisit && (
-        <Dialog open={openViewDialog} onOpenChange={setOpenViewDialog}>
-          <DialogContent className="sm:max-w-[525px]">
-            <DialogHeader>
-              <DialogTitle>Ziyaret Detayları</DialogTitle>
-              <DialogDescription>
-                Vatandaş ziyaret kaydının detayları.
-              </DialogDescription>
-            </DialogHeader>
-            <VisitDetails 
-              visit={selectedVisit}
-              onClose={() => setOpenViewDialog(false)}
-              onUpdate={handleUpdateVisit}
-            />
-          </DialogContent>
-        </Dialog>
+        <>
+          <Dialog open={openViewDialog} onOpenChange={setOpenViewDialog}>
+            <DialogContent className="sm:max-w-[525px]">
+              <DialogHeader>
+                <DialogTitle>Ziyaret Detayları</DialogTitle>
+                <DialogDescription>
+                  Vatandaş ziyaret kaydının detayları.
+                </DialogDescription>
+              </DialogHeader>
+              <VisitDetails 
+                visit={selectedVisit}
+                onClose={() => setOpenViewDialog(false)}
+                onUpdate={handleUpdateVisit}
+              />
+            </DialogContent>
+          </Dialog>
+          
+          <Dialog open={openForwardDialog} onOpenChange={setOpenForwardDialog}>
+            <DialogContent className="sm:max-w-[525px]">
+              <DialogHeader>
+                <DialogTitle>Ziyareti Yönlendir</DialogTitle>
+                <DialogDescription>
+                  Bu ziyaret kaydını yönlendirmek istediğiniz müdürlüğü seçin.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="py-4">
+                <Select value={selectedDirectorate} onValueChange={setSelectedDirectorate}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Müdürlük seçin" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Müdürlükler</SelectLabel>
+                      {directorates.map((directorate) => (
+                        <SelectItem key={directorate.id} value={directorate.name}>
+                          {directorate.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setOpenForwardDialog(false)}>
+                  İptal
+                </Button>
+                <Button onClick={handleConfirmForward}>
+                  Yönlendir
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </>
       )}
     </div>
   );

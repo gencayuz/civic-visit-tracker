@@ -1,17 +1,27 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { LoginLog } from '@/types/loginLog';
+import { directorates } from '@/types/directorate';
 
 // Mock users for demonstration purposes
 const MOCK_USERS = [
   { username: 'admin', password: 'admin123', role: 'admin' },
   { username: 'staff', password: 'staff123', role: 'staff' },
+  // Add directorate users automatically from the directorates array
+  ...directorates.map(dir => ({
+    username: dir.username,
+    password: dir.password,
+    role: 'directorate',
+    directorateId: dir.id
+  }))
 ];
 
 interface User {
   username: string;
   role: string;
+  directorateId?: number;
 }
 
 interface AuthContextType {
@@ -21,6 +31,8 @@ interface AuthContextType {
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
   isAdmin: () => boolean;
+  isDirectorate: () => boolean;
+  getCurrentDirectorate: () => string | null;
   loginLogs: LoginLog[];
 }
 
@@ -56,7 +68,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       );
 
       if (foundUser) {
-        const userData = { username: foundUser.username, role: foundUser.role };
+        const userData = { 
+          username: foundUser.username, 
+          role: foundUser.role,
+          directorateId: foundUser.directorateId
+        };
+        
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
         
@@ -96,6 +113,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const isAdmin = () => {
     return user?.role === 'admin';
   };
+  
+  const isDirectorate = () => {
+    return user?.role === 'directorate';
+  };
+  
+  const getCurrentDirectorate = () => {
+    if (user?.role === 'directorate') {
+      return user.username;
+    }
+    return null;
+  };
 
   return (
     <AuthContext.Provider 
@@ -106,6 +134,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         login, 
         logout, 
         isAdmin,
+        isDirectorate,
+        getCurrentDirectorate,
         loginLogs 
       }}
     >

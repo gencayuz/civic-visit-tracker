@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import Visits from "./pages/Visits";
 import Events from "./pages/Events";
 import Departments from "./pages/Departments";
+import Directorates from "./pages/Directorates";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
@@ -42,6 +43,7 @@ const App = () => (
                 <Route path="/visits" element={<Visits />} />
                 <Route path="/events" element={<Events />} />
                 <Route path="/departments" element={<Departments />} />
+                <Route path="/directorates" element={<Directorates />} />
                 <Route path="/profile" element={<Profile />} />
                 
                 {/* Sadece Admin erişimli sayfalar */}

@@ -1,9 +1,10 @@
+
 import React from 'react';
 import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Timer } from 'lucide-react';
+import { Clock, Timer, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   Table,
@@ -20,6 +21,7 @@ interface VisitsTableProps {
   visits: VisitType[];
   onViewVisit: (visit: VisitType) => void;
   onDeleteVisit?: (visitId: number) => void;
+  onForwardVisit?: (visit: VisitType) => void;
 }
 
 const getStatusColor = (status: string) => {
@@ -35,7 +37,7 @@ const getStatusColor = (status: string) => {
   }
 };
 
-const VisitsTable: React.FC<VisitsTableProps> = ({ visits, onViewVisit, onDeleteVisit }) => {
+const VisitsTable: React.FC<VisitsTableProps> = ({ visits, onViewVisit, onDeleteVisit, onForwardVisit }) => {
   const { isAdmin } = useAuth();
   
   const calculateTimeLeft = (date: Date) => {
@@ -50,6 +52,14 @@ const VisitsTable: React.FC<VisitsTableProps> = ({ visits, onViewVisit, onDelete
       onDeleteVisit(id);
     } else {
       toast.error('Silme işlevi henüz tanımlanmamış');
+    }
+  };
+
+  const handleForwardVisit = (visit: VisitType) => {
+    if (onForwardVisit) {
+      onForwardVisit(visit);
+    } else {
+      toast.error('Yönlendirme işlevi henüz tanımlanmamış');
     }
   };
 
@@ -104,6 +114,14 @@ const VisitsTable: React.FC<VisitsTableProps> = ({ visits, onViewVisit, onDelete
                     onClick={() => onViewVisit(visit)}
                   >
                     Görüntüle
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleForwardVisit(visit)}
+                  >
+                    <ArrowRight className="h-4 w-4 mr-1" />
+                    Yönlendir
                   </Button>
                   {isAdmin() && (
                     <Button
