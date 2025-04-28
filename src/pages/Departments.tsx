@@ -1,11 +1,19 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { departments } from '@/types/visit';
 import { useAuth } from '@/contexts/AuthContext';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 // Mock department statistics data
 const departmentStats = [
@@ -51,6 +59,13 @@ const getDepartmentStats = (departmentId: number) => {
 
 const Departments: React.FC = () => {
   const { isAdmin } = useAuth();
+  const [selectedDepartment, setSelectedDepartment] = useState<number | null>(null);
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleViewDetails = (departmentId: number) => {
+    setSelectedDepartment(departmentId);
+    setOpenDialog(true);
+  };
 
   return (
     <div className="space-y-6">
@@ -99,13 +114,100 @@ const Departments: React.FC = () => {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button variant="ghost" size="sm" className="w-full">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="w-full"
+                  onClick={() => handleViewDetails(department.id)}
+                >
                   Detayları Görüntüle
                 </Button>
               </CardFooter>
             </Card>
-          ))}
+          );
+        })}
       </div>
+
+      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedDepartment && departments.find(d => d.id === selectedDepartment)?.name} Detayları
+            </DialogTitle>
+            <DialogDescription>
+              Bu departman ile ilgili ziyaret detayları ve istatistikler.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            {selectedDepartment && (
+              <>
+                <div className="grid grid-cols-3 gap-4">
+                  <Card>
+                    <CardHeader className="py-2">
+                      <CardTitle className="text-sm">Toplam Ziyaret</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-2xl font-bold">
+                        {getDepartmentStats(selectedDepartment).totalVisits}
+                      </p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardHeader className="py-2">
+                      <CardTitle className="text-sm">Aktif</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-2xl font-bold">
+                        {getDepartmentStats(selectedDepartment).activeVisits}
+                      </p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardHeader className="py-2">
+                      <CardTitle className="text-sm">Tamamlanan</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-2xl font-bold">
+                        {getDepartmentStats(selectedDepartment).resolvedVisits}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+                
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Ziyaretçi Adı</TableHead>
+                      <TableHead>Tarih</TableHead>
+                      <TableHead>Durum</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>Ali Yılmaz</TableCell>
+                      <TableCell>10.04.2023</TableCell>
+                      <TableCell>Tamamlandı</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Ayşe Demir</TableCell>
+                      <TableCell>11.04.2023</TableCell>
+                      <TableCell>Aktif</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Mehmet Öz</TableCell>
+                      <TableCell>12.04.2023</TableCell>
+                      <TableCell>Aktif</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
