@@ -14,10 +14,12 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { departments, VisitType } from '@/types/visit';
+import { toast } from 'sonner';
 
 interface VisitsTableProps {
   visits: VisitType[];
   onViewVisit: (visit: VisitType) => void;
+  onDeleteVisit?: (visitId: number) => void;
 }
 
 const getStatusColor = (status: string) => {
@@ -33,7 +35,7 @@ const getStatusColor = (status: string) => {
   }
 };
 
-const VisitsTable: React.FC<VisitsTableProps> = ({ visits, onViewVisit }) => {
+const VisitsTable: React.FC<VisitsTableProps> = ({ visits, onViewVisit, onDeleteVisit }) => {
   const { isAdmin } = useAuth();
   
   const calculateTimeLeft = (date: Date) => {
@@ -41,6 +43,14 @@ const VisitsTable: React.FC<VisitsTableProps> = ({ visits, onViewVisit }) => {
     const now = new Date().getTime();
     const diffMinutes = Math.floor((visitTime - now) / (1000 * 60));
     return diffMinutes > 0 ? `${diffMinutes} dk` : 'Bitti';
+  };
+
+  const handleDeleteVisit = (id: number) => {
+    if (onDeleteVisit) {
+      onDeleteVisit(id);
+    } else {
+      toast.error('Silme işlevi henüz tanımlanmamış');
+    }
   };
 
   return (
