@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,7 +15,7 @@ import { EventType, EventFormData } from '@/types/event';
 import AddEventForm from '@/components/events/AddEventForm';
 import EventsTable from '@/components/events/EventsTable';
 import EventDetails from '@/components/events/EventDetails';
-import { CalendarIcon, FileWord, FileExcel } from "lucide-react";
+import { CalendarIcon, FileText as FileWord, FileSpreadsheet as FileExcel } from "lucide-react";
 import { format } from "date-fns";
 import { tr } from "date-fns/locale";
 import {

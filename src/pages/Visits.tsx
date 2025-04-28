@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CalendarIcon, FileWord, FileExcel } from 'lucide-react';
+import { CalendarIcon } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -37,6 +36,7 @@ import VisitDetails from '@/components/visits/VisitDetails';
 import VisitsTable from '@/components/visits/VisitsTable';
 import { VisitType, VisitFormData, departments } from '@/types/visit';
 import { directorates } from '@/types/directorate';
+import { FileText as FileWord, FileSpreadsheet as FileExcel } from 'lucide-react';
 
 const initialVisits: VisitType[] = [
   {

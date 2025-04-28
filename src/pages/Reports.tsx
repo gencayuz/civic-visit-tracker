@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,7 +7,7 @@ import { tr } from "date-fns/locale";
 import { VisitType } from '@/types/visit';
 import { EventType } from '@/types/event';
 import { Button } from "@/components/ui/button";
-import { CalendarIcon, FileText, FileWord, FileExcel } from "lucide-react";
+import { CalendarIcon, FileText as FileWord, FileSpreadsheet as FileExcel } from "lucide-react";
 import {
   Popover,
   PopoverContent,
