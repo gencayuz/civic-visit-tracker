@@ -4,101 +4,107 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { departments } from '@/types/visit';
+import { useAuth } from '@/contexts/AuthContext';
 
-// Mock department data
-const departmentsData = [
+// Mock department statistics data
+const departmentStats = [
   { 
     id: 1, 
-    name: 'Housing', 
-    description: 'Handles housing permits, registrations, and related inquiries.',
     activeVisits: 12,
     resolvedVisits: 28,
     totalVisits: 40
   },
   { 
     id: 2, 
-    name: 'Taxes', 
-    description: 'Manages tax payments, exemptions, and property assessments.',
     activeVisits: 8,
     resolvedVisits: 32,
     totalVisits: 40
   },
   { 
     id: 3, 
-    name: 'Utilities', 
-    description: 'Oversees water, electricity, and waste management services.',
     activeVisits: 5,
     resolvedVisits: 15,
     totalVisits: 20
   },
   { 
     id: 4, 
-    name: 'Permits', 
-    description: 'Processes building permits, business licenses, and other municipal permits.',
     activeVisits: 15,
     resolvedVisits: 10,
     totalVisits: 25
   },
   { 
     id: 5, 
-    name: 'General Inquiries', 
-    description: 'Handles general questions and directs citizens to appropriate departments.',
     activeVisits: 3,
     resolvedVisits: 17,
     totalVisits: 20
   },
 ];
 
+const getDepartmentStats = (departmentId: number) => {
+  return departmentStats.find(stat => stat.id === departmentId) || {
+    activeVisits: 0,
+    resolvedVisits: 0,
+    totalVisits: 0
+  };
+};
+
 const Departments: React.FC = () => {
+  const { isAdmin } = useAuth();
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Departments</h1>
-          <p className="text-muted-foreground">Manage departments and view their current workloads.</p>
+          <h1 className="text-3xl font-bold tracking-tight">Departmanlar</h1>
+          <p className="text-muted-foreground">Departmanları yönetin ve iş yüklerini görüntüleyin.</p>
         </div>
-        <Button>Add Department</Button>
+        {isAdmin() && <Button>Departman Ekle</Button>}
       </div>
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {departmentsData.map((department) => (
-          <Card key={department.id}>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle>{department.name}</CardTitle>
-                <Badge variant="outline" className="ml-2">
-                  {department.activeVisits} active
-                </Badge>
-              </div>
-              <CardDescription className="mt-2">{department.description}</CardDescription>
-            </CardHeader>
-            <CardContent className="pb-2">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span>Resolved rate</span>
-                  <span className="font-medium">
-                    {Math.round((department.resolvedVisits / department.totalVisits) * 100)}%
-                  </span>
+        {departments.map((department) => {
+          const stats = getDepartmentStats(department.id);
+          return (
+            <Card key={department.id}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle>{department.name}</CardTitle>
+                  <Badge variant="outline" className="ml-2">
+                    {stats.activeVisits} aktif
+                  </Badge>
                 </div>
-                <Progress
-                  value={(department.resolvedVisits / department.totalVisits) * 100}
-                  className="h-2"
-                />
-              </div>
-              <div className="mt-4 text-sm">
-                <div className="flex justify-between">
-                  <span>Total visits: {department.totalVisits}</span>
-                  <span>Resolved: {department.resolvedVisits}</span>
+                <CardDescription className="mt-2">
+                  {department.name} departmanına ait ziyaret ve işlem kayıtları
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pb-2">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span>Tamamlanma oranı</span>
+                    <span className="font-medium">
+                      {Math.round((stats.resolvedVisits / stats.totalVisits) * 100 || 0)}%
+                    </span>
+                  </div>
+                  <Progress
+                    value={(stats.resolvedVisits / stats.totalVisits) * 100 || 0}
+                    className="h-2"
+                  />
                 </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button variant="ghost" size="sm" className="w-full">
-                View Details
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
+                <div className="mt-4 text-sm">
+                  <div className="flex justify-between">
+                    <span>Toplam ziyaret: {stats.totalVisits}</span>
+                    <span>Tamamlanan: {stats.resolvedVisits}</span>
+                  </div>
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button variant="ghost" size="sm" className="w-full">
+                  Detayları Görüntüle
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
       </div>
     </div>
   );

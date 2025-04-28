@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Timer } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   Table,
   TableBody,
@@ -34,6 +34,8 @@ const getStatusColor = (status: string) => {
 };
 
 const VisitsTable: React.FC<VisitsTableProps> = ({ visits, onViewVisit }) => {
+  const { isAdmin } = useAuth();
+  
   const calculateTimeLeft = (date: Date) => {
     const visitTime = new Date(date).getTime();
     const now = new Date().getTime();
@@ -85,13 +87,25 @@ const VisitsTable: React.FC<VisitsTableProps> = ({ visits, onViewVisit }) => {
                 </Badge>
               </TableCell>
               <TableCell className="text-right">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onViewVisit(visit)}
-                >
-                  Görüntüle
-                </Button>
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onViewVisit(visit)}
+                  >
+                    Görüntüle
+                  </Button>
+                  {isAdmin() && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-red-500 hover:text-red-700"
+                      onClick={() => handleDeleteVisit(visit.id)}
+                    >
+                      Sil
+                    </Button>
+                  )}
+                </div>
               </TableCell>
             </TableRow>
           ))
